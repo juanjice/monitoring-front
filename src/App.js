@@ -4,9 +4,10 @@ import {
   Switch,
   Route
 } from "react-router-dom";
-import Test from './components/Test';
 import Header from './components/navbar/Header';
 import Home from './components/Home';
+import RegisterForm from './components/register_options/RegisterForm';
+
 
 
 function App() {
@@ -16,9 +17,9 @@ function App() {
       <Switch>
 
         <Route path="/" exact component={Home}/>
-        <Route path="/register" component={Test} />
-        <Route path="/Login" />
-
+        <Route path="/register" component={RegisterForm} />
+        
+        
       </Switch>
     </Router>
   );
