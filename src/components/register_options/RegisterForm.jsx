@@ -1,43 +1,81 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import userServices from "../../services/userServices";
-
+import validator from 'validator';
 function RegisterForm() {
+  const initialStateRegister = {
+    email: "",
+    firstName: "",
+    lastName: "",
+    password: "",
+    confirmPass: "",
+  };
   const history = useHistory();
-  const [email, setEmail] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  //const [password,setPassword]=useState("")
-  const [formError, setFormError] = useState(null);
+  const [error, setError] = useState(null);  
+  const [formValues, setFormValues] = useState(initialStateRegister);
 
-  const saveUser = (e) => {    
-    e.preventDefault();    
-    if (email === "" || firstName === "") {
-      setFormError("Email and Name are mandatory fields!");
-      return;
-    }else{
-        let user = { email: email, firstName: firstName, lastName: lastName };
-        userServices.addUser(user).then((res) => {
-        history.push("/");
-      });
-    }
+  const handleInputs = (e) => {
+    setFormValues({ ...formValues, [e.target.name]: e.target.value });
     
   };
+
+  const saveUser = (e) => {
+    e.preventDefault(); 
+    let newError=null;    
+    newError=matchPassword(newError); 
+    newError=validMail(newError);
+    newError=mandatoryFields(newError);  
+    setError(newError)      
+    if(!newError){
+      let user = { email: formValues.email, firstName: formValues.firstName, lastName: formValues.lastName };
+        userServices.addUser(user).then((res) => {
+        history.push("/")
+      })
+    }
+  };
+  const mandatoryFields = (newError) => {
+    if (
+      formValues.email === "" ||
+      formValues.firstName === "" ||
+      formValues.lastName === "" ||
+      formValues.password === "" ||
+      formValues.confirmPass === ""
+    ) {      
+      return "All fields are mandatory!"
+    }
+    else{
+      return newError
+    }
+  };
+  const matchPassword = (newError) => {
+    if (formValues.password !== formValues.confirmPass) {
+      return "Password doen't match!"
+    }else{
+      return newError
+    }
+  };
+  const validMail =(newError)=>{
+    if(!validator.isEmail(formValues.email)){
+      return "The mail is invalid!"
+    }else{
+      return newError
+    }
+  }
 
   return (
     <div className="container ">
       <br />
       <h2 className="d-flex justify-content-center">Register</h2>
-
-      <form >
+      <form>
         <div className="form-group">
           <label>First Name:</label>
           <input
             type="text"
             className="form-control"
+            name="firstName"
             placeholder="Enter first name"
             onChange={(e) => {
-              setFirstName(e.target.value);
+              handleInputs(e);
             }}
           />
         </div>
@@ -47,9 +85,10 @@ function RegisterForm() {
           <input
             type="text"
             className="form-control"
+            name="lastName"
             placeholder="Enter last name"
             onChange={(e) => {
-              setLastName(e.target.value);
+              handleInputs(e);
             }}
           />
         </div>
@@ -60,10 +99,11 @@ function RegisterForm() {
             type="email"
             className="form-control"
             id="exampleInputEmail1"
+            name="email"
             aria-describedby="emailHelp"
             placeholder="Enter email"
             onChange={(e) => {
-              setEmail(e.target.value);
+              handleInputs(e);
             }}
           />
         </div>
@@ -73,23 +113,44 @@ function RegisterForm() {
           <input
             type="password"
             className="form-control"
-            id="exampleInputPassword1"
+            name="password"
             placeholder="Password"
+            onChange={(e) => {
+              handleInputs(e);
+            }}
           />
         </div>
-        <button type="submit" className="btn btn-primary" onClick={ (e)=> {
-            setFormError(null) 
-            saveUser(e)}}>
+        <br />
+        <div className="form-group">
+          <label>Confirm Password:</label>
+          <input
+            type="password"
+            className="form-control"
+            name="confirmPass"
+            placeholder="Confirm Password"
+            onChange={(e) => {
+              handleInputs(e);
+            }}
+          />
+        </div>
+        <br />
+        <button
+          type="button"
+          className="btn btn-primary "
+          onClick={(e) => {
+            saveUser(e);
+          }}
+        >
           Submit
-        </button >
+        </button>
       </form>
 
       <br />
-      {formError ? (
+      {error && (
         <div className="alert alert-danger" role="alert">
-          {formError}
+          {error}
         </div>
-      ) : null}
+      )}
     </div>
   );
 }

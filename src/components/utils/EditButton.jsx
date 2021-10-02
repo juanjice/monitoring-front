@@ -1,8 +1,10 @@
 import React from "react";
 
-function EditButton() {
+function EditButton(props) {
   return (
-    <button style={{marginLeft:"10px"}}
+    <button 
+    onClick={()=>props.editFunc(props.userId)}
+    style={{marginLeft:"10px"}}
     type="button" className="btn btn-warning">
         <svg
       xmlns="http://www.w3.org/2000/svg"

@@ -1,0 +1,11 @@
+.foot{
+    display:block;
+    background-color: black;
+    position:absolute;
+    bottom:0;
+    
+    
+}
+.foot p{
+display: block;
+}
