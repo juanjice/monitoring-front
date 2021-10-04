@@ -20,6 +20,9 @@ function Header() {
           <LinkContainer to="/curriculum">
             <Nav.Link>Curriculim Vitae</Nav.Link>
           </LinkContainer>
+          <LinkContainer to="/reduxEx">
+            <Nav.Link>Redux Examples</Nav.Link>
+          </LinkContainer>
           <Form className="d-flex">
             <FormControl
               type="search"

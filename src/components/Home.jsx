@@ -1,14 +1,20 @@
 import React,{useState,useEffect} from "react";
+import {useSelector,useDispatch} from 'react-redux'
+import { fetchUsers } from "../redux";
 import {Table} from "react-bootstrap"
 import userServices from "../services/userServices";
 import CancelButton from "./utils/CancelButton";
 import DeleteButton from "./utils/DeleteButton";
 import EditButton from "./utils/EditButton";
 import SaveButton from "./utils/SaveButton";
+import Loading from "./info_components/Loading";
+import FetchError from "./info_components/FetchError";
 
 
 
 function Home() {
+    const state = useSelector(state => state.users)
+    const dispatch = useDispatch()
     const [users,setUsers]=useState([]);
     const [editMode,setEditMode]=useState({id:null,state:false});
     const [newUser,setNewUser]=useState(null)
@@ -17,6 +23,8 @@ function Home() {
         userServices.getUsers().then(res=>{
             setUsers(res.data)
         })
+        dispatch(fetchUsers())
+        console.log(state.data)
     }, [newUser])
     const deleteUser=(id)=>{
       userServices.delUser(id).then(res=>{
@@ -51,8 +59,8 @@ function Home() {
           </tr>
         </thead>
         <tbody>
-            {
-                users.map( user=> 
+          {
+              (!state.loading && !state.error) && (users.map( user=> 
                   {
                     if(editMode.id===user.id && editMode.state){                      
                       return (
@@ -84,11 +92,15 @@ function Home() {
                     </tr>)
                     }
                   }                    
-                )
+                ))
+
             }
           
         </tbody>
       </Table>
+      {
+        state.loading ? <Loading/> : state.error ? <FetchError message={state.error}/> :null
+      }
     </div>
   );
 }
