@@ -7,6 +7,7 @@ import CancelButton from "./utils/CancelButton";
 import DeleteButton from "./utils/DeleteButton";
 import EditButton from "./utils/EditButton";
 import SaveButton from "./utils/SaveButton";
+import ViewMore from "./utils/ViewMore";
 import Loading from "./info_components/Loading";
 import FetchError from "./info_components/FetchError";
 
@@ -14,27 +15,25 @@ import FetchError from "./info_components/FetchError";
 
 function Home() {
     const state = useSelector(state => state.users)
-    const dispatch = useDispatch()
-    const [users,setUsers]=useState([]);
-    const [editMode,setEditMode]=useState({id:null,state:false});
+    const dispatch = useDispatch()   
+    const [editMode,setEditMode]=useState({id:null,state:false});    
     const [newUser,setNewUser]=useState(null)
-    useEffect(() => {
-      
-        userServices.getUsers().then(res=>{
-            setUsers(res.data)
-        })
-        dispatch(fetchUsers())
-        console.log(state.data)
-    }, [newUser])
+
+    useEffect(() => {      
+        dispatch(fetchUsers())                         
+    }, [dispatch])
+
     const deleteUser=(id)=>{
+      
       userServices.delUser(id).then(res=>{
-        alert(`Usuario numero ${id} eliminado satisfactoriamente`)        
-        setUsers(users.filter(user=>user.id!==id))
+        dispatch(fetchUsers())
+        alert(`Usuario numero ${id} eliminado satisfactoriamente`)
       })
     }
     const activeEditMode=(id)=>{
         setEditMode({id:id,state:true})        
-        setNewUser(users.filter(user=>user.id===id)[0]);
+        setNewUser(state.data.filter(user=>user.id===id)[0]);
+        
     }
     const cancelEditMode=()=>{
       setEditMode({id:null,state:false})
@@ -42,7 +41,7 @@ function Home() {
     }
     const updateUser=(id)=>{
       userServices.updateUser(id,newUser).then(res=>{
-        console.log(res)
+        dispatch(fetchUsers())
         cancelEditMode()
       })
     }
@@ -60,7 +59,7 @@ function Home() {
         </thead>
         <tbody>
           {
-              (!state.loading && !state.error) && (users.map( user=> 
+              (!state.loading && !state.error) && (state.data.map( user=> 
                   {
                     if(editMode.id===user.id && editMode.state){                      
                       return (
@@ -84,7 +83,8 @@ function Home() {
                     <td>{user.lastName}</td>
                     <td>{user.email}</td>
                     <td style={{width:"20%",textAlign:"center"}}>
-                    <div>
+                    <div >
+                        <ViewMore> </ViewMore> 
                         <EditButton editFunc={activeEditMode} userId={user.id}></EditButton>
                         <DeleteButton deleteFunc={deleteUser} userId={user.id}></DeleteButton> 
                     </div>
@@ -100,7 +100,7 @@ function Home() {
       </Table>
       {
         state.loading ? <Loading/> : state.error ? <FetchError message={state.error}/> :null
-      }
+      }      
     </div>
   );
 }

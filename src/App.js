@@ -8,7 +8,6 @@ import Header from './components/navbar/Header';
 import Home from './components/Home';
 import RegisterForm from './components/register_options/RegisterForm';
 import Curriculum from './components/body/Curriculum';
-import ReduxEjm from './components/ReduxEjm';
 import HooksRedux from './components/HooksRedux';
 
 
