@@ -9,7 +9,7 @@ import Home from './components/Home';
 import RegisterForm from './components/register_options/RegisterForm';
 import Curriculum from './components/body/Curriculum';
 import HooksRedux from './components/HooksRedux';
-
+import ProtectedComponents from './components/ProtectedComponents';
 
 
 function App() {
@@ -21,7 +21,8 @@ function App() {
         <Route path="/" exact component={Home}/>
         <Route path="/register" component={RegisterForm} />
         <Route path="/curriculum" component={Curriculum} />   
-        <Route path="/reduxEx" component={HooksRedux} />        
+      { /* <Route path="/reduxEx" component={HooksRedux} />    */}
+        <ProtectedComponents path="/reduxEx" component={HooksRedux}/>
       </Switch>
       
     </Router>

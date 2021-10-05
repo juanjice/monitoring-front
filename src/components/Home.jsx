@@ -100,7 +100,8 @@ function Home() {
       </Table>
       {
         state.loading ? <Loading/> : state.error ? <FetchError message={state.error}/> :null
-      }      
+      } 
+         
     </div>
   );
 }

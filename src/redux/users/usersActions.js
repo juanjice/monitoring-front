@@ -19,8 +19,8 @@ export const fetchUserError=(error)=>{
 }
 export const fetchUsers =()=>{
     return (dispatch)=>{
-        dispatch(fetchUserRequest)
-        
+
+        dispatch(fetchUserRequest())        
         userServices.getUsers().then(response=>{
             const users= response.data
             dispatch(fetchUserSuccess(users))
